@@ -1,0 +1,18 @@
+.c-playlist-creator{
+  display: flex;
+  flex-direction: column;
+  
+  flex: 1;
+  width: 100%;
+  margin: 16px;
+  min-height: 70vh;
+  position: relative;
+  &__content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+}
