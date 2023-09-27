@@ -1,28 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Card from "../components/Card";
-import InputText from "../components/InputText";
 import SongList from "../components/SongList";
 import './SongSelector.scss';
 
 function SongsSelector(props){
-  const [searchInput, setSearchInput] = useState('');
-  
-  useEffect(()=>{
-    props.searchSongs();
-  }, [searchInput])
-
-  function handleSearchInputChange(event){
-    setSearchInput(event.currentTarget.value);
-  }
 
   function Header(){
     return(
-      <InputText 
-          value={searchInput}
-          placeholder='Search a song' 
-          onChange={handleSearchInputChange}
-          name='search_song_term'
-        />
+      <h1>Search Results</h1>
     )
   }
   function Body(){

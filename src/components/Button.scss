@@ -1,0 +1,27 @@
+.c-button{
+  display: block;
+  background-color: black;
+  color: white;
+  border: 1px solid black;
+  border-radius: 999px;
+  padding: 4px;
+  width: 240px;
+  margin:  auto auto 0 auto;
+  transition: all 0.3s ease;
+
+  &:hover{
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    transition: all 0.3s ease;
+  }
+
+  &--secondary{
+    background-color: white;
+    color: black;
+    &:hover{
+      background-color: black;
+      color: white;
+    }
+  }
+}

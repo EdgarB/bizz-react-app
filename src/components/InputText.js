@@ -1,9 +1,10 @@
 import React from 'react';
 import './InputText.scss';
+import clsx from 'clsx';
 
 function InputText(props){
   return(
-    <input className='c-input-text' 
+    <input className={clsx('c-input-text', props.className)} 
       type='text'
       name={props.name}
       value={props.value} 

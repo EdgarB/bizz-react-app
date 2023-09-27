@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '../components/Card';
 import SongList from '../components/SongList';
 import './PlaylistCreator.scss';
+import Button from '../components/Button';
 
 function PlaylistCreator(props){
   function Header(){
@@ -22,9 +23,7 @@ function PlaylistCreator(props){
 
   function Footer(){
     return(
-      <div className='c-playlist-creator__button'>
-        Save to spotify
-      </div>
+      <Button type='secondary'>Save to spotify</Button>
     )
   }
   
