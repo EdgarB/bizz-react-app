@@ -1,0 +1,11 @@
+.c-app {
+  text-align: center;
+  &__content{
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-around;
+  }
+}
+
