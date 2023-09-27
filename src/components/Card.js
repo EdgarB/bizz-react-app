@@ -5,7 +5,9 @@ import './Card.scss';
 function Card(props){
   return(
     <div className='c-card'>
-      {props.children}
+      <div className='c-card__header'>{props.header}</div>
+      <div className='c-card__body'>{props.body}</div>
+      <div className='c-card__footer'>{props.footer}</div>
     </div>
   );
 }

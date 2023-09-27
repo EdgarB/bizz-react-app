@@ -14,17 +14,17 @@ function SongList(props){
       <div className='c-song-list__item' key={song.id}>
         <Song  name={song.songName} artist={song.artist} album={song.album} />
         {!isSongSelected(song) && 
-          <div 
+          <div className='c-song-list__button'
             onClick={() => {props.handleOnClickAdd(song)}}
           > 
-            Add 
+            + 
           </div>
         }
         
         {isSongSelected(song) && 
-          <div onClick={
+          <div className='c-song-list__button' onClick={
             () => {props.handleOnClickRemove(song)}}>
-             Remove 
+            -
           </div>
         }
       </div>

@@ -1,9 +1,31 @@
 .c-card{
-  display:block;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  position: relative;
   background-color: white;
   border-radius: 4px;
   padding: 16px;
-  box-shadow: 5px 38px 201px 6px rgba(0,0,0,0.63);
-  -webkit-box-shadow: 5px 38px 201px 6px rgba(0,0,0,0.63);
-  -moz-box-shadow: 5px 38px 201px 6px rgba(0,0,0,0.63);
+  height: 100%;
+  z-index:1;
+  -webkit-box-shadow: 0px 10px 35px -8px rgba(43,45,79,0.4);
+  -moz-box-shadow: 0px 10px 35px -8px rgba(43,45,79,0.4);
+  box-shadow: 0px 10px 35px -8px rgba(43,45,79,0.4);
+
+  &__header{
+    display: block;
+    width: 100%;
+  }
+
+  &__body{
+    display: block;
+    width: 100%;
+    flex: 1;
+  }
+
+  &__footer{
+    display: block;
+    width: 100%;
+  }
 }

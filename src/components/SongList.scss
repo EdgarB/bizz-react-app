@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 
   &__item{
     width: 100%;
@@ -14,6 +15,26 @@
 
     &:not(:last-child){
       border-bottom: 1px solid black;
+    }
+  }
+  &__button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border: 0.5px solid black;
+    width: 24px;
+    height:24px;
+    text-align: center;
+    vertical-align:middle;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+
+    &:hover{
+      background-color: black;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
   }
 
