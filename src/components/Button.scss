@@ -24,4 +24,25 @@
       color: white;
     }
   }
+
+  &--disabled{
+    background-color: gray;
+    border-color: gray;
+    &:hover{
+      background-color: gray;
+      border-color: gray;
+      color: white;
+      cursor: not-allowed;
+    }
+    &.c-button--secondary{
+      background-color: gray;
+      border-color: gray;
+      &:hover{
+        background-color: gray;
+        border-color: gray;
+        color: white;
+        cursor: not-allowed;
+      }
+    }
+  }
 }
