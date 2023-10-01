@@ -15,6 +15,8 @@ function App() {
   const [songs, setSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
+  console.log(process.env.REACT_APP_SPOTIFY_API_CLIENT_ID)
+
   function handleOnClickAdd(song){
     setSongsSelected((prevSongs)=>{ 
       prevSongs[song.id] = song
