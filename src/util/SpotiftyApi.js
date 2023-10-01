@@ -80,7 +80,7 @@ async function requestAccessToken(){
     code_verifier: codeVerifier
   });
 
-  const response = fetch('https://accounts.spotify.com/api/token', {
+  fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'

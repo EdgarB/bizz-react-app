@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 import './App.scss';
 import './Helpers.scss';
@@ -34,7 +34,7 @@ function App() {
   }
 
   async function searchTermOnSpotify(event){
-    if(searchTerm != ""){
+    if(searchTerm !== ""){
       const searchResults = await searchOnSpotify(searchTerm);
       if(searchResults){
         const songsArr = searchResults.tracks.items.map((song)=>{
