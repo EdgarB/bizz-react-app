@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 import './App.scss';
 import './Helpers.scss';
@@ -7,94 +7,19 @@ import SongsSelector from './containers/SongsSelector';
 import PlaylistCreator from './containers/PlaylistCreator';
 import InputText from './components/InputText';
 import Button from './components/Button';
-
-function searchSongs(input){
-  return [
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 1,
-      isAdded: false
-    },
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 2,
-      isAdded: false
-    },
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 3,
-      isAdded: false
-    },
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 4,
-      isAdded: false
-    },
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 5,
-      isAdded: false
-    },
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 6,
-      isAdded: false
-    },
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 7,
-      isAdded: false
-    },
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 8,
-      isAdded: false
-    },
-    {
-      songName: 'A head full of dreams',
-      artist: 'Coldplay',
-      album: 'Ace',
-      id: 9,
-      isAdded: false
-    }
-  ]
-
-}
+import { searchOnSpotify } from './util/SpotiftyApi';
 
 
 function App() {
   const [songsSelected, setSongsSelected]= useState({});
   const [songs, setSongs] = useState([]);
-  const [searchTerm, setSearchTerm] = useState([]);
-
-  useEffect(()=>{
-    setSongs(searchSongs());
-  }, [searchTerm])
+  const [searchTerm, setSearchTerm] = useState('');
 
   function handleOnClickAdd(song){
     setSongsSelected((prevSongs)=>{ 
       prevSongs[song.id] = song
       return Object.assign({}, prevSongs)})
   }
-
-  
- 
 
   function handleOnClickRemove(song){
     setSongsSelected((prev)=>{
@@ -108,6 +33,23 @@ function App() {
     setSearchTerm(event.currentTarget.value)
   }
 
+  async function searchTermOnSpotify(event){
+    if(searchTerm !== ""){
+      const searchResults = await searchOnSpotify(searchTerm);
+      if(searchResults){
+        const songsArr = searchResults.tracks.items.map((song)=>{
+          return {
+            songName: song.name,
+            artist: Object.values(song.artists).map(a => a.name).join(', '),
+            album: song.album.name,
+            id: song.id,
+            uri: song.uri
+          }
+        });
+        setSongs(songsArr);
+      }
+    }
+  }
 
 
   return (
@@ -123,16 +65,19 @@ function App() {
           name='search_song_term'
           className='h-mb-8px'
         />
-        <Button>Search</Button>
+        <Button isDisabled={searchTerm===''} onClick={searchTermOnSpotify}>Search</Button>
       </div>  
       <div className='c-app__content'>
         <SongsSelector
           songs ={songs}
-          searchSongs={searchSongs} 
           songsSelected={songsSelected} 
           handleOnClickAdd={handleOnClickAdd} 
           handleOnClickRemove={handleOnClickRemove}/>
-        <PlaylistCreator songs={Object.values(songsSelected)} songsSelected={songsSelected} handleOnClickAdd={handleOnClickAdd} handleOnClickRemove={handleOnClickRemove}/>
+        <PlaylistCreator 
+          songs={Object.values(songsSelected)} 
+          songsSelected={songsSelected} 
+          handleOnClickAdd={handleOnClickAdd} 
+          handleOnClickRemove={handleOnClickRemove}/>
       </div>
       
     </div>
