@@ -43,7 +43,7 @@ function App() {
             artist: Object.values(song.artists).map(a => a.name).join(', '),
             album: song.album.name,
             id: song.id,
-            isAdded: false
+            uri: song.uri
           }
         });
         setSongs(songsArr);

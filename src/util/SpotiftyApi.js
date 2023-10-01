@@ -36,7 +36,7 @@ async function requestAuthorizationCode(){
 
   generateCodeChallenge(codeVerifier).then(codeChallenge => {
     let state = generateRandomString(16);
-    let scope = 'user-read-private user-read-email';
+    let scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private';
 
     localStorage.setItem('code_verifier', codeVerifier);
 
@@ -194,6 +194,88 @@ export async function searchOnSpotify(term){
 
     throw new Error('Something went wrong')
 
+  }catch(error){
+    console.log(error)
+  }
+}
+
+
+
+export async function createPlaylistOnSpotify(playlistName, tracksUris){
+  try{
+    const isAuth = await isAuthorized();
+    if(!isAuth){
+      await authorize();
+    }
+
+    //Takes a small amount of time for the API to respond correctly to the access token
+    await delay(2000);
+
+    //Get access token required for requests
+    const accToken = await getAccessToken();
+
+    const baseUrl = ' https://api.spotify.com/v1';
+    const baseOptions = {
+      headers: {
+        Authorization: 'Bearer ' + accToken
+      }
+    };
+    //1) Get users id
+    const getUserURL = `${baseUrl}/me`;
+    const getUserResponse = await fetch(getUserURL, baseOptions);
+    const jsonUserResponse = await getUserResponse.json();
+    if(!getUserResponse.ok){
+      throw new Error('Something went wrong ', jsonUserResponse);
+    }
+    const userID = jsonUserResponse.id;
+    console.log('User id -> ', userID);
+
+    //Takes a small amount of time for the API to respond correctly to the access token
+    await delay(2000);
+
+    //2) Create playlist for user
+    const createPlaylistURL = `${baseUrl}/users/${userID}/playlists`
+    const createPlaylistResponse = await fetch(createPlaylistURL, {
+      method: "POST",
+      body: JSON.stringify({
+        name: playlistName
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: 'Bearer ' + accToken
+      }
+    });
+
+    const createPlaylistResponseJSON = await createPlaylistResponse.json();
+    console.log('json response', createPlaylistResponseJSON)
+    if(!createPlaylistResponse.ok){
+      throw new Error('Something went wrong ', createPlaylistResponseJSON);
+    }
+    const playlistID = createPlaylistResponseJSON.id;
+    console.log('Playlist created successfuly. ID -> ', playlistID);
+
+    //Takes a small amount of time for the API to respond correctly to the access token
+    await delay(2000);
+
+    //3) Add tracks to playlist created
+    const addTracksPlaylistURL = `${baseUrl}/playlists/${playlistID}/tracks`;
+    const addTracksPlaylistResponse = await fetch(addTracksPlaylistURL, {
+      method: "POST",
+      body: JSON.stringify({
+        uris: tracksUris
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: 'Bearer ' + accToken
+      }
+    });
+    const addTracksPlaylistResponseJSON = await addTracksPlaylistResponse.json();
+    if(!addTracksPlaylistResponse.ok){
+      throw new Error('Something went wrong ', addTracksPlaylistResponseJSON);
+    }
+    console.log('Songs added to playlist successfully');
+
+   
   }catch(error){
     console.log(error)
   }

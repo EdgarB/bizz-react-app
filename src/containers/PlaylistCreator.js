@@ -3,8 +3,15 @@ import Card from '../components/Card';
 import SongList from '../components/SongList';
 import './PlaylistCreator.scss';
 import Button from '../components/Button';
+import {createPlaylistOnSpotify} from '../util/SpotiftyApi';
 
 function PlaylistCreator(props){
+  function songsSelectedURIS(){
+    return props.songs.map((s)=>{
+      return s.uri;
+    })
+  }
+
   function Header(){
     return(
       <h1> Playlist </h1>
@@ -23,7 +30,7 @@ function PlaylistCreator(props){
 
   function Footer(){
     return(
-      <Button type='secondary'>Save to spotify</Button>
+      <Button onClick={()=>{ createPlaylistOnSpotify('THE PLAYLIST 2',songsSelectedURIS())}} type='secondary'>Save to spotify</Button>
     )
   }
   
