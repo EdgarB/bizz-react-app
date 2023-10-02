@@ -22,7 +22,7 @@ function App() {
   const [isPopupLoading, setIsPopupLoading] = useState(false)
 
   useEffect(()=>{
-    if(!isPopupHidden && songs.length > 0){
+    if(songs.length > 0){
       setIsPopupLoading(false);
       setIsPopupHidden(true)
       setPopupContent('');
