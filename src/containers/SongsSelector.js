@@ -5,25 +5,35 @@ import './SongSelector.scss';
 
 function SongsSelector(props){
 
-  function Header(){
+  const header = () => {
     return(
       <h1>Search Results</h1>
     )
   }
-  function Body(){
-    return(
-      <SongList 
-        songs={props.songs} 
-        handleOnClickAdd={props.handleOnClickAdd} 
-        handleOnClickRemove={props.handleOnClickRemove}
-        songsSelected={props.songsSelected}/>
-    )
+  const body = () => {
+    if(props.songs.length > 0){
+      return(
+        <SongList 
+          songs={props.songs} 
+          handleOnClickAdd={props.handleOnClickAdd} 
+          handleOnClickRemove={props.handleOnClickRemove}
+          songsSelected={props.songsSelected}/>
+      )
+    }else{
+      return(
+        <p className='c-song-selector__message'>
+          {"Let's search some songs for your new playlist :)"}
+        </p>
+      )
+
+    }
+   
     
   }
 
   return(
     <div className="c-song-selector">
-      <Card header={<Header/>} body={<Body/>}/>
+      <Card header={header()} body={body()}/>
     </div>
   );
 }
