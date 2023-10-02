@@ -201,8 +201,9 @@ export async function searchOnSpotify(term){
 
 
 
-export async function createPlaylistOnSpotify(playlistName, tracksUris){
+export async function createPlaylistOnSpotify(playlistName, tracksUris, onLoading, onSuccess, onError){
   try{
+    onLoading('Checking authorization')
     const isAuth = await isAuthorized();
     if(!isAuth){
       await authorize();
@@ -220,6 +221,7 @@ export async function createPlaylistOnSpotify(playlistName, tracksUris){
         Authorization: 'Bearer ' + accToken
       }
     };
+    onLoading('Getting users id')
     //1) Get users id
     const getUserURL = `${baseUrl}/me`;
     const getUserResponse = await fetch(getUserURL, baseOptions);
@@ -233,6 +235,7 @@ export async function createPlaylistOnSpotify(playlistName, tracksUris){
     //Takes a small amount of time for the API to respond correctly to the access token
     await delay(2000);
 
+    onLoading('Creating Playlist')
     //2) Create playlist for user
     const createPlaylistURL = `${baseUrl}/users/${userID}/playlists`
     const createPlaylistResponse = await fetch(createPlaylistURL, {
@@ -255,8 +258,10 @@ export async function createPlaylistOnSpotify(playlistName, tracksUris){
     console.log('Playlist created successfuly. ID -> ', playlistID);
 
     //Takes a small amount of time for the API to respond correctly to the access token
+    
+    onLoading('Adding songs to playlist')
     await delay(2000);
-
+    
     //3) Add tracks to playlist created
     const addTracksPlaylistURL = `${baseUrl}/playlists/${playlistID}/tracks`;
     const addTracksPlaylistResponse = await fetch(addTracksPlaylistURL, {
@@ -274,9 +279,10 @@ export async function createPlaylistOnSpotify(playlistName, tracksUris){
       throw new Error('Something went wrong ', addTracksPlaylistResponseJSON);
     }
     console.log('Songs added to playlist successfully');
-
+    onSuccess();
    
   }catch(error){
+    onError('Something went wrong. Please try again.')
     console.log(error)
   }
 }

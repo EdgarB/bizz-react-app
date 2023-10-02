@@ -1,13 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import Card from '../components/Card';
 import SongList from '../components/SongList';
 import './PlaylistCreator.scss';
 import Button from '../components/Button';
 import {createPlaylistOnSpotify} from '../util/SpotiftyApi';
 import InputText from '../components/InputText';
+import { PopupContext } from '../contexts/PopupContext';
 
 function PlaylistCreator(props){
   const [playlistName, setPlaylistName] = useState('THE PLAYLIST');
+  const {setIsPopupHidden, setPopupContent, setIsPopupLoading} = useContext(PopupContext);
+
 
   const playlistNameInputChangeHandler = (event)=>{
     setPlaylistName(event.currentTarget.value);
@@ -19,7 +22,30 @@ function PlaylistCreator(props){
 
   const onClickSaveHandler = (event) => {
     if(isDataReadyToCreatePlaylist()){
-      createPlaylistOnSpotify( playlistName,songsSelectedURIS());
+      setIsPopupHidden(false);
+      setIsPopupLoading(true);
+      setPopupContent('Creating Playlist');
+      const onSuccess = ()=>{
+        setIsPopupLoading(false);
+        setPopupContent('PLAYLIST CREATED!!!')
+        setTimeout(()=>{ 
+          setIsPopupHidden(true);
+          setPopupContent('');
+        }, 1500);
+      }
+      const onLoading = (state)=>{
+        setPopupContent(state);
+      }
+      const onError = (error)=>{
+        setIsPopupLoading(false);
+        setPopupContent(error)
+        setTimeout(()=>{ 
+          setIsPopupHidden(true);
+          setPopupContent('');
+        }, 1500);
+      }
+      createPlaylistOnSpotify( playlistName,songsSelectedURIS(), onLoading, onSuccess, onError);
+
     }
   }
 
@@ -27,6 +53,20 @@ function PlaylistCreator(props){
     return props.songs.map((s)=>{
       return s.uri;
     })
+  }
+
+  const body = ()=>{
+    if(props.songs.length > 0){
+      return(
+        <SongList 
+          handleOnClickAdd={props.handleOnClickAdd}
+          handleOnClickRemove={props.handleOnClickRemove}
+          songsSelected={props.songsSelected}
+          songs={props.songs || []}/>
+      )
+    }else{
+      return(<p className='c-playlist-creator__message'>{"Let's add some songs for your new playlist :)"}</p>)
+    }
   }
   
   return(
@@ -41,11 +81,7 @@ function PlaylistCreator(props){
           
           onChange={playlistNameInputChangeHandler}/>
         </div>}
-        body={<SongList 
-          handleOnClickAdd={props.handleOnClickAdd}
-          handleOnClickRemove={props.handleOnClickRemove}
-          songsSelected={props.songsSelected}
-          songs={props.songs || []}/>}
+        body={body()}
         footer={<Button 
           isDisabled={!isDataReadyToCreatePlaylist()} 
           onClick={onClickSaveHandler} 

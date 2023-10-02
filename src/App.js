@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import './App.scss';
 import './Helpers.scss';
@@ -8,12 +8,26 @@ import PlaylistCreator from './containers/PlaylistCreator';
 import InputText from './components/InputText';
 import Button from './components/Button';
 import { searchOnSpotify } from './util/SpotiftyApi';
+import Popup from './components/Popup';
+import { PopupContext } from './contexts/PopupContext';
+import LoadingEllipses from './components/LoadingEllipses';
 
 
 function App() {
   const [songsSelected, setSongsSelected]= useState({});
   const [songs, setSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPopupHidden, setIsPopupHidden] = useState(true);
+  const [popupContent, setPopupContent] = useState('Loading')
+  const [isPopupLoading, setIsPopupLoading] = useState(false)
+
+  useEffect(()=>{
+    if(!isPopupHidden && songs.length > 0){
+      setIsPopupLoading(false);
+      setIsPopupHidden(true)
+      setPopupContent('');
+    }
+  }, [songs])
 
   function handleOnClickAdd(song){
     setSongsSelected((prevSongs)=>{ 
@@ -35,6 +49,10 @@ function App() {
 
   async function searchTermOnSpotify(event){
     if(searchTerm !== ""){
+      setSongs([]);
+      setIsPopupLoading(true);
+      setPopupContent('Loading')
+      setIsPopupHidden(false);
       const searchResults = await searchOnSpotify(searchTerm);
       if(searchResults){
         const songsArr = searchResults.tracks.items.map((song)=>{
@@ -53,34 +71,40 @@ function App() {
 
 
   return (
-    <div className='c-app'>
-      <NavBar> 
-        BIZZ
-      </NavBar>
-      <div className='c-app__header'>
-        <InputText 
-          value={searchTerm}
-          placeholder='Search a song' 
-          onChange={onSearchTermChange}
-          name='search_song_term'
-          className='h-mb-8px'
-        />
-        <Button isDisabled={searchTerm===''} onClick={searchTermOnSpotify}>Search</Button>
-      </div>  
-      <div className='c-app__content'>
-        <SongsSelector
-          songs ={songs}
-          songsSelected={songsSelected} 
-          handleOnClickAdd={handleOnClickAdd} 
-          handleOnClickRemove={handleOnClickRemove}/>
-        <PlaylistCreator 
-          songs={Object.values(songsSelected)} 
-          songsSelected={songsSelected} 
-          handleOnClickAdd={handleOnClickAdd} 
-          handleOnClickRemove={handleOnClickRemove}/>
+    <PopupContext.Provider value={{setIsPopupHidden, setPopupContent, setIsPopupLoading}}>
+      <div className='c-app'>
+        <Popup isHidden={isPopupHidden}>
+          {popupContent}
+          {isPopupLoading && <LoadingEllipses/>}
+        </Popup>
+        <NavBar> 
+          BIZZ
+        </NavBar>
+        <div className='c-app__header'>
+          <InputText 
+            value={searchTerm}
+            placeholder='Search a song' 
+            onChange={onSearchTermChange}
+            name='search_song_term'
+            className='h-mb-8px'
+          />
+          <Button isDisabled={searchTerm===''} onClick={searchTermOnSpotify}>Search</Button>
+        </div>  
+        <div className='c-app__content'>
+          <SongsSelector
+            songs ={songs}
+            songsSelected={songsSelected} 
+            handleOnClickAdd={handleOnClickAdd} 
+            handleOnClickRemove={handleOnClickRemove}/>
+          <PlaylistCreator 
+            songs={Object.values(songsSelected)} 
+            songsSelected={songsSelected} 
+            handleOnClickAdd={handleOnClickAdd} 
+            handleOnClickRemove={handleOnClickRemove}/>
+        </div>
+        
       </div>
-      
-    </div>
+    </PopupContext.Provider>
   );
 }
 
